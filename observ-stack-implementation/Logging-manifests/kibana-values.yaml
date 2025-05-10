@@ -1,0 +1,31 @@
+service:
+  type: LoadBalancer
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    service.beta.kubernetes.io/aws-load-balancer-target-type: ip
+
+elasticsearchHosts: "https://elasticsearch-master:9200"
+
+kibanaConfig:
+  kibana.yml: |
+    server.host: "0.0.0.0"
+    elasticsearch.hosts: ["https://elasticsearch-master:9200"]
+    elasticsearch.ssl.verificationMode: none
+    elasticsearch.serviceAccountToken: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS1raWJhbmE6VEZIRVVFUnhScXl1bGZWYUZ2Q1BXQQ"
+    xpack.security.encryptionKey: "dev_encryption_key_min_32_characters_long"
+    xpack.encryptedSavedObjects.encryptionKey: "dev_encryption_key_min_32_characters_long"
+    xpack.reporting.encryptionKey: "dev_encryption_key_min_32_characters_long"
+
+rbac:
+  create: true
+  serviceAccount:
+    create: true
+
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"                                   

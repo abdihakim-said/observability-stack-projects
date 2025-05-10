@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubernetes-prometheus-stack
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  ingressClassName: alb
+  rules:
+    # Prometheus Subdomain
+    - host: prometheus.hakimdevops.art  # Replace with your Prometheus subdomain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: monitoring-kube-prometheus-prometheus  # Replace with your Prometheus service name
+                port:
+                  number: 9090
+
+    # Grafana Subdomain
+    - host: grafana.hakimdevops.art  # Replace with your Grafana subdomain
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: monitoring-grafana  # Replace with your Grafana service name
+                port:
+                  number: 80
+
+    # Alertmanager Subdomain
+    - host: alertmanager.hakimdevops.art  # Replace with your Alertmanager subdomain
+      http:
+        paths:
+          - path: /alertmanager
+            pathType: Prefix
+            backend:
+              service:
+                name: monitoring-kube-prometheus-alertmanager  # Replace with your Alertmanager service name
+                port:
+                  number: 9093
