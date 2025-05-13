@@ -345,25 +345,7 @@ helm install fluent-bit fluent/fluent-bit -f fluentbit-values.yaml -n logging
 
 
 
-## 🧼 Clean Up
-```bash
 
-helm uninstall monitoring -n monitoring
-
-helm uninstall fluent-bit -n logging
-
-helm uninstall elasticsearch -n logging
-
-helm uninstall kibana -n logging
-
-cd day-4
-
-kubectl delete -k kubernetes-manifest/
-
-kubectl delete -k alerts-alertmanager-servicemonitor-manifest/
-
-
-eksctl delete cluster --name observability
 
 ```
 # 🏠 Architecture
@@ -440,7 +422,7 @@ helm uninstall elasticsearch -n logging
 
 helm uninstall monitoring -n monitoring
 
-cd day-4
+cd 
 
 kubectl delete -k app-manifest/
 
@@ -452,7 +434,7 @@ eksctl delete cluster --name observability
 ```
 
 
-### 🧼 Step 5: Clean UP
+### 🧼  Clean UP
 - **Uninstall helm chart**:
 ```bash
 helm uninstall monitoring --namespace monitoring
@@ -466,5 +448,22 @@ kubectl delete ns monitoring
 eksctl delete cluster --name observability
 ```
 
+## 🧼 Clean Up
+```bash
 
+helm uninstall monitoring -n monitoring
+
+helm uninstall fluent-bit -n logging
+
+helm uninstall elasticsearch -n logging
+
+helm uninstall kibana -n logging
+
+
+kubectl delete -k app-manifest/
+
+kubectl delete -k alerts-alertmanager-servicemonitor-manifest/
+
+
+eksctl delete cluster --name observability
 
