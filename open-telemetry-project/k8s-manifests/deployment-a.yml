@@ -16,9 +16,9 @@ spec:
         app: go-service-a-deployment
     spec:
       containers:
-      # - image: ankitjodhani/golang-svc-a:latest
-      - image: <<IMAGE_NAME_ID>>:<<TAG>>
-        name: service-a
+      # - image: abdihakimdevops/micro-service-b:v1
+      - image: abdihakimdevops/micro-service-a:v1
+        name: go-service-a-deployment
         imagePullPolicy: Always
         ports:
         - containerPort: 80

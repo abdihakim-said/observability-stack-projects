@@ -17,3 +17,9 @@ kube-state-metrics:
 
 prometheus-node-exporter:
   enabled: false
+
+server:
+  persistentVolume:
+    enabled: true
+    storageClass: gp2
+    size: 8Gi

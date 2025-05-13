@@ -98,7 +98,7 @@ You should see a pod named `aws-load-balancer-controller` in the `Running` state
 ### **6. Reapply Your Ingress Resource**
 Reapply your Ingress resource to trigger the creation of the ALB and target groups:
 ```bash
-kubectl apply -f /Users/abdihakimsaid/opt/observability-stack/day-3/ingress_kube_prom_stack.yaml
+kubectl apply -f /Users/abdihakimsaid/opt/observability-stack/Monitoring-manifests/ingress_kube_prom_stack.yaml
 ```
 
 ---

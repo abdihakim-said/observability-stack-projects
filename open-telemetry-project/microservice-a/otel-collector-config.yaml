@@ -17,6 +17,11 @@ receivers:
 
 processors:
   batch:
+  attributes:
+    actions:
+      - key: net.sock.peer.port
+        action: convert
+        converted_type: string
 
 exporters:
   prometheus:
@@ -33,5 +38,5 @@ service:
       exporters: [prometheus]
     traces:
       receivers: [otlp]
-      processors: [batch]
+      processors: [attributes, batch]
       exporters: [otlp]

@@ -1,0 +1,17 @@
+components:
+  frontend-proxy:
+    ingress:
+      enabled: true
+      ingressClassName: alb
+      annotations:
+        alb.ingress.kubernetes.io/scheme: internet-facing
+        alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+        alb.ingress.kubernetes.io/target-type: ip
+      hosts:
+        - host: www.hakimdevops.art
+          paths:
+            - path: /
+              pathType: Prefix
+              port: 8080
+    service:
+      type: ClusterIP
