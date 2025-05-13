@@ -1,5 +1,10 @@
  ## 🏢 Enterprise Real-World Scenario: Observability Platform for a FinTech Client
 
+![architecture](https://github.com/user-attachments/assets/22988e34-fad3-41a0-bb78-179e78c6ce58)
+
+
+
+
 ### Scenario
 
 As a DevOps engineer at a consultancy, I was tasked by a FinTech enterprise to design and implement a **centralized observability platform** for their AWS EKS-based microservices. The client faced:
