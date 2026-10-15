@@ -10,7 +10,7 @@ spec:
   ingressClassName: alb
   rules:
     # Prometheus Subdomain
-    - host: prometheus.hakimdevops.art  # Replace with your Prometheus subdomain
+    - host: prometheus.example.com  # Replace with your Prometheus subdomain
       http:
         paths:
           - path: /
@@ -22,7 +22,7 @@ spec:
                   number: 9090
 
     # Grafana Subdomain
-    - host: grafana.hakimdevops.art  # Replace with your Grafana subdomain
+    - host: grafana.example.com  # Replace with your Grafana subdomain
       http:
         paths:
           - path: /
@@ -34,7 +34,7 @@ spec:
                   number: 80
 
     # Alertmanager Subdomain
-    - host: alertmanager.hakimdevops.art  # Replace with your Alertmanager subdomain
+    - host: alertmanager.example.com  # Replace with your Alertmanager subdomain
       http:
         paths:
           - path: /alertmanager

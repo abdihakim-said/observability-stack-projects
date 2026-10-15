@@ -5,7 +5,7 @@ storage:
     port: 9200
     scheme: https
     user: elastic  # Replace with the actual username if necessary
-    password: LkDLs7qYLXMgaxUX  # Replace with the actual password
+    password: <ELASTIC_PASSWORD>  # kubectl get secret elasticsearch-master-credentials -n tracing -o jsonpath="{.data.password}" | base64 -d
     tls:
       enabled: true
       ca: /tls/ca-cert.pem  # Path where the CA cert is mounted

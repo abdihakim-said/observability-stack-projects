@@ -98,7 +98,7 @@ You should see a pod named `aws-load-balancer-controller` in the `Running` state
 ### **6. Reapply Your Ingress Resource**
 Reapply your Ingress resource to trigger the creation of the ALB and target groups:
 ```bash
-kubectl apply -f /Users/abdihakimsaid/opt/observability-stack/Monitoring-manifests/ingress_kube_prom_stack.yaml
+kubectl apply -f ingress_kube_prom_stack.yaml
 ```
 
 ---
@@ -107,7 +107,7 @@ kubectl apply -f /Users/abdihakimsaid/opt/observability-stack/Monitoring-manifes
 After reapplying the Ingress resource, check if the target groups are created:
 1. Open the **AWS Management Console**.
 2. Navigate to **EC2 > Target Groups**.
-3. Verify that target groups are created for your services (`prometheus.hakimdevops.art`, `grafana.hakimdevops.art`, `alertmanager.hakimdevops.art`).
+3. Verify that target groups are created for your services (`prometheus.example.com`, `grafana.example.com`, `alertmanager.example.com`).
 
 ---
 
@@ -121,12 +121,12 @@ After completing the above steps:
 
 2. Verify DNS propagation:
    ```bash
-   nslookup prometheus.hakimdevops.art
+   nslookup prometheus.example.com
    ```
 
 3. Access your services:
-   - Prometheus: `http://prometheus.hakimdevops.art`
-   - Grafana: `http://grafana.hakimdevops.art`
-   - Alertmanager: `http://alertmanager.hakimdevops.art`
+   - Prometheus: `http://prometheus.example.com`
+   - Grafana: `http://grafana.example.com`
+   - Alertmanager: `http://alertmanager.example.com`
 
 ---

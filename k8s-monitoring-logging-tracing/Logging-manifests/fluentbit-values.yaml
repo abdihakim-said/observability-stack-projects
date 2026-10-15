@@ -303,7 +303,13 @@ terminationGracePeriodSeconds:
 
 priorityClassName: ""
 
-env: []
+# Password injected from the secret the Elasticsearch chart creates; referenced as ${ELASTIC_PASSWORD} below
+env:
+  - name: ELASTIC_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: elasticsearch-master-credentials
+        key: password
 #  - name: FOO
 #    value: "bar"
 
@@ -440,7 +446,7 @@ config:
         Host elasticsearch-master
         Port 9200
         HTTP_User elastic
-        HTTP_Passwd q3cq2NRW22FUoKHQ
+        HTTP_Passwd ${ELASTIC_PASSWORD}
         tls On
         tls.verify Off
         Logstash_Format On
@@ -455,7 +461,7 @@ config:
         Host elasticsearch-master
         Port 9200
         HTTP_User elastic
-        HTTP_Passwd q3cq2NRW22FUoKHQ
+        HTTP_Passwd ${ELASTIC_PASSWORD}
         tls On
         tls.verify Off
         Logstash_Format On

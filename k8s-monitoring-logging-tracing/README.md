@@ -1,87 +1,10 @@
- ## 🏢 Enterprise Real-World Scenario: Observability Platform for a FinTech Client
+# Metrics, logs and traces on EKS
 
-![architecture](https://github.com/user-attachments/assets/22988e34-fad3-41a0-bb78-179e78c6ce58)
+Prometheus, Alertmanager and Grafana for metrics; Elasticsearch, Fluent Bit and Kibana for logs; and Jaeger for traces, on an EKS cluster. Two instrumented Node.js services generate the data.
 
+> Built in my own AWS account following days 1–6 of Abhishek Veeramalla's [Observability Zero to Hero](https://github.com/iam-veeramalla/observability-zero-to-hero) course. It is not client work. For what I changed and what broke along the way, see the [top-level README](../README.md).
 
-
-
-### Scenario
-
-As a DevOps engineer at a consultancy, I was tasked by a FinTech enterprise to design and implement a **centralized observability platform** for their AWS EKS-based microservices. The client faced:
-
-- **Limited visibility** into application health and performance
-- **Slow incident response** due to scattered logs and metrics
-- **No distributed tracing** for debugging complex transactions
-- **Compliance requirements** for audit-ready monitoring and alerting
-
----
-
-### Problem
-
-- **Siloed monitoring:** Teams used different tools for metrics, logs, and traces, making correlation difficult.
-- **Manual troubleshooting:** Root cause analysis was slow, impacting SLAs.
-- **No proactive alerting:** Outages were often reported by customers before engineers.
-- **Scaling issues:** Existing solutions couldn’t handle growing traffic and data volume.
-
----
-
-### Solution
-
-We architected and deployed a **Kubernetes-native observability stack** using:
-
-- **Prometheus & Alertmanager:** Metrics collection and alerting, exposed via NodePort for secure internal access.
-- **Grafana:** Unified dashboards for business and technical KPIs.
-- **Elasticsearch & Kibana:** Centralized log storage and analytics, with secure access via AWS NLB and custom domain.
-- **Fluent Bit:** Lightweight log shipping from all pods to Elasticsearch.
-- **Jaeger:** Distributed tracing, sharing the Elasticsearch backend and exposed via LoadBalancer.
-
-**Key features:**
-- Automated Helm-based deployments for repeatability
-- RBAC and TLS for security and compliance
-- Custom dashboards and alert rules for proactive monitoring
-
----
-
-### Challenges
-
-- **Token synchronization:** Kibana failed to connect to Elasticsearch due to mismatched service account tokens. We automated token retrieval and Helm value updates.
-- **LoadBalancer targeting:** AWS NLB initially targeted nodes, not pods, causing health check failures. We fixed this with proper Kubernetes service annotations.
-- **Resource tuning:** Initial resource requests were too low, causing pod scheduling issues. We iteratively tuned requests/limits.
-- **TLS management:** Coordinating certificates across services required careful secret and configmap management.
-
----
-
-### Outcome
-
-- **Unified observability:** All logs, metrics, and traces are now centralized and correlated, enabling rapid root cause analysis.
-- **Proactive alerting:** Engineers receive actionable alerts before customers notice issues.
-- **Audit-ready:** The platform meets compliance requirements for monitoring and access control.
-- **Scalable & automated:** The stack scales with business growth and is fully automated for future clusters.
-
----
-
-### What I Learned
-
-- **Integration details matter:** Small misconfigurations (like tokens) can block the whole stack.
-- **Automation is key:** Scripting repetitive tasks (token sync, resource tuning) saves hours.
-- **Documentation & knowledge transfer** are critical for client success.
-- **Open-source tools** can deliver enterprise-grade observability with the right architecture.
-
----
-
-*This project demonstrates how a consultancy can deliver a robust, scalable, and secure observability platform for demanding enterprise environments.*
- 
-
-
-
- 
- 
-##  the implementation part of the project
- 
- 
- 
- 🛠️  Installation & Configurations
-## 📦 Step 1: Create EKS Cluster
+## Step 1: Create EKS Cluster
 
 ### Prerequisites
 - Download and Install AWS Cli - Please Refer [this]("https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html") link.
@@ -122,25 +45,25 @@ eksctl create nodegroup --cluster=observability \
 aws eks update-kubeconfig --name observability
 ```
 
-### 🧰 Step 2: Install kube-prometheus-stack
+### Step 2: Install kube-prometheus-stack
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo update
 ```
 
-### 🚀 Step 3: Deploy the chart into a new namespace "monitoring"
+### Step 3: Deploy the chart into a new namespace "monitoring"
 ```bash
 kubectl create ns monitoring
 ```
 ```bash
-cd day-2
+cd Monitoring-manifests
 
 helm install monitoring prometheus-community/kube-prometheus-stack \
 -n monitoring \
 -f ./custom_kube_prometheus_stack.yml
 ```
 
-### ✅ Step 4: Verify the Installation
+### Step 4: Verify the Installation
 ```bash
 kubectl get all -n monitoring
 ```
@@ -164,13 +87,13 @@ kubectl port-forward service/alertmanager-operated -n monitoring 9093:9093
 
 
 
-# 🎯 Project Objectives
-- 🛠️ **Implement Custom Metrics in Node.js Application**: Use the prom-client library to write and expose custom metrics in the Node.js application.
-- 🚨 **Set Up Alerts in Alertmanager**: Configure Alertmanager to send email notifications if a container crashes more than two times.
-- 📝 **Set Up Logging**: Implement logging on both application and cluster (node) logs for better observability using EFK stack(Elasticsearch, FluentBit, Kibana).
-- 📸 **Implement Distributed Tracing for Node.js Application**: Enhance observability by instrumenting the Node.js application for distributed tracing using Jaeger. enabling better performance monitoring and troubleshooting of complex, multi-service architectures.
+# Project Objectives
+- **Implement Custom Metrics in Node.js Application**: Use the prom-client library to write and expose custom metrics in the Node.js application.
+- **Set Up Alerts in Alertmanager**: Configure Alertmanager to send email notifications if a container crashes more than two times.
+- **Set Up Logging**: Implement logging on both application and cluster (node) logs for better observability using EFK stack(Elasticsearch, FluentBit, Kibana).
+- **Implement Distributed Tracing for Node.js Application**: Enhance observability by instrumenting the Node.js application for distributed tracing using Jaeger. enabling better performance monitoring and troubleshooting of complex, multi-service architectures.
 
-# 🏠 Architecture
+# Architecture
 ![Project Architecture](images/architecture.gif)
 
 ## 1) Write Custom Metrics
@@ -212,12 +135,12 @@ or use the pre-built images
 ```
 
 ## 3) Kubernetes manifest
-- Review the Kubernetes manifest files located in `day-4/kubernetes-manifest`.
+- Review the Kubernetes manifest files located in `app-manifest/`.
 - Apply the Kubernetes manifest files to your cluster by running:
 ```bash
 kubectl create ns dev
 
-kubectl apply -k kubernetes-manifest/
+kubectl apply -k app-manifest/
 ```
 
 ## 4) Test all the endpoints
@@ -258,10 +181,10 @@ kubectl apply -k alerts-alertmanager-servicemonitor-manifest/
 - `<<LOAD_BALANCER_DNS_NAME>>/crash`
 - You should receive an email once the application container has restarted at least 3 times.
 
-# 🔍 Logging overview
+# Logging overview
 - Logging is crucial in any distributed system, especially in Kubernetes, to monitor application behavior, detect issues, and ensure the smooth functioning of microservices.
 
-## 📝 Step-by-Step Setup
+## Step-by-Step Setup
 
 ### 1) Create IAM Role for Service Account
 ```bash
@@ -320,7 +243,7 @@ kubectl get secrets --namespace=logging elasticsearch-master-credentials -ojsonp
 ```
 - Retrieves the password for the Elasticsearch cluster's master credentials from the Kubernetes secret.
 - The password is base64 encoded, so it needs to be decoded before use.
-- 👉 **Note**: Please write down the password for future reference
+- **Note**: Please write down the password for future reference
 
 ### 7) Install Kibana
 ```bash
@@ -330,13 +253,13 @@ helm install kibana --set service.type=LoadBalancer elastic/kibana -n logging
 - It is exposed as a LoadBalancer service, making it accessible from outside the cluster.
 
 ### 8) Install Fluentbit with Custom Values/Configurations
-- 👉 **Note**: Please update the `HTTP_Passwd` field in the `fluentbit-values.yml` file with the password retrieved earlier in step 6: (i.e NJyO47UqeYBsoaEU)"
+- **Note**: Fluent Bit reads the password from the `elasticsearch-master-credentials` secret through the `ELASTIC_PASSWORD` environment variable, so nothing needs pasting into `fluentbit-values.yaml`. Deploy it in the `logging` namespace, next to that secret.
 ```bash
 helm repo add fluent https://fluent.github.io/helm-charts
 helm install fluent-bit fluent/fluent-bit -f fluentbit-values.yaml -n logging
 ```
 
-## ✅ Conclusion
+## Conclusion
 - We have successfully installed the EFK stack in our Kubernetes cluster, which includes Elasticsearch for storing logs, Fluentbit for collecting and forwarding logs, and Kibana for visualizing logs.
 - To verify the setup, access the Kibana dashboard by entering the `LoadBalancer DNS name followed by :5601 in your browser.
     - `http://LOAD_BALANCER_DNS_NAME:5601`
@@ -348,12 +271,12 @@ helm install fluent-bit fluent/fluent-bit -f fluentbit-values.yaml -n logging
 
 
 ```
-# 🏠 Architecture
+# Architecture
 ![Project Architecture](images/architecture.gif)
 
 
 
-## ⚙️ Setting Up Jaeger
+## Setting Up Jaeger
 
 ### Step 1: Instrumenting Your Code
 - To start tracing, you need to instrument your services. This means adding tracing capabilities to your code. Most popular programming languages and frameworks have libraries or middleware that make this easy.
@@ -399,7 +322,7 @@ helm repo update
 ```
 
 ### Step 8: Install Jaeger with Custom Values
-- 👉 **Note**: Please update the `password` field and other related field in the `jaeger-values.yaml` file with the password retrieved earlier in day-4 at step 6: (i.e NJyO47UqeYBsoaEU)"
+- **Note**: Please update the `password` field and other related field in the `jaeger-values.yaml` file with the password retrieved earlier in day-4 at step 6: (i.e NJyO47UqeYBsoaEU)"
 -  Command installs Jaeger into the tracing namespace using a custom jaeger-values.yaml configuration file. Ensure the password is updated in the file before installation.
 ```bash
 helm install jaeger jaegertracing/jaeger -n tracing --values jaeger-values.yaml
@@ -411,7 +334,7 @@ kubectl port-forward svc/jaeger-query 8080:80 -n tracing
 
 ```
 
-## 🧼 Clean Up
+## Clean Up
 ```bash
 
 helm uninstall jaeger -n tracing
@@ -434,7 +357,7 @@ eksctl delete cluster --name observability
 ```
 
 
-### 🧼  Clean UP
+### Clean UP
 - **Uninstall helm chart**:
 ```bash
 helm uninstall monitoring --namespace monitoring
@@ -448,7 +371,7 @@ kubectl delete ns monitoring
 eksctl delete cluster --name observability
 ```
 
-## 🧼 Clean Up
+## Clean Up
 ```bash
 
 helm uninstall monitoring -n monitoring

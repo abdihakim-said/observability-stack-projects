@@ -12,10 +12,10 @@ kibanaConfig:
     server.host: "0.0.0.0"
     elasticsearch.hosts: ["https://elasticsearch-master:9200"]
     elasticsearch.ssl.verificationMode: none
-    elasticsearch.serviceAccountToken: "AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS1raWJhbmE6VEZIRVVFUnhScXl1bGZWYUZ2Q1BXQQ"
-    xpack.security.encryptionKey: "dev_encryption_key_min_32_characters_long"
-    xpack.encryptedSavedObjects.encryptionKey: "dev_encryption_key_min_32_characters_long"
-    xpack.reporting.encryptionKey: "dev_encryption_key_min_32_characters_long"
+    elasticsearch.serviceAccountToken: "<KIBANA_SERVICE_TOKEN>"  # elasticsearch-service-tokens create elastic/kibana kibana
+    xpack.security.encryptionKey: "<32+ character random string>"
+    xpack.encryptedSavedObjects.encryptionKey: "<32+ character random string>"
+    xpack.reporting.encryptionKey: "<32+ character random string>"
 
 rbac:
   create: true
